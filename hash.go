@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"math"
+	"math/rand"
+	"time"
 )
 
 const HashSize = 32
@@ -15,10 +18,33 @@ var (
 
 type Hash [HashSize]byte
 
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
+
 func NewHash(b []byte) Hash {
 	var hash Hash
 	hash.SetBytes(b)
 	return hash
+}
+
+func fallbackRandomBytes(n int) []byte {
+	data := make([]byte, n)
+	for i := 0; i < n; i++ {
+		data[i] = byte(rand.Intn(int(math.MaxInt8) + 1))
+	}
+
+	return data
+}
+
+func NewRandomHash() Hash {
+	data := make([]byte, HashSize)
+	_, err := rand.Read(data)
+	if err != nil {
+		data = fallbackRandomBytes(HashSize)
+	}
+
+	return NewHash(data)
 }
 
 func (h *Hash) SetBytes(b []byte) {
@@ -27,6 +53,10 @@ func (h *Hash) SetBytes(b []byte) {
 	}
 
 	copy(h[HashSize-len(b):], b)
+}
+
+func (h Hash) TakeBytes(b, e int) []byte {
+	return h[b:e]
 }
 
 func (h Hash) Equal(target Hash) bool {

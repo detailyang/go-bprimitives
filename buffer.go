@@ -263,6 +263,10 @@ func (b *Buffer) GetVarBytes() ([]byte, error) {
 	return b.GetBytes(int(n))
 }
 
+func (b *Buffer) PutCheckSum() *Buffer {
+	return b.PutBytes(DHash256(b.data).TakeBytes(0, 4))
+}
+
 func (b *Buffer) Size() int {
 	return b.pos
 }
