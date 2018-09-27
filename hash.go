@@ -28,6 +28,19 @@ func NewHash(b []byte) Hash {
 	return hash
 }
 
+func NewHashFromHexString(hexstring string) (Hash, error) {
+	data, err := hex.DecodeString(hexstring)
+	if err != nil {
+		return HashZero, err
+	}
+
+	return NewHash(data), nil
+}
+
+func NewHashFromReversedHexString(hexstring string) (Hash, error) {
+	return NewHashFromHexString(reverseHexString(hexstring))
+}
+
 func fallbackRandomBytes(n int) []byte {
 	data := make([]byte, n)
 	for i := 0; i < n; i++ {
@@ -35,6 +48,22 @@ func fallbackRandomBytes(n int) []byte {
 	}
 
 	return data
+}
+
+func reverseHexString(s string) string {
+	r := []rune(s)
+	ns := len(s)
+	middle := ns / 2
+	if middle%2 == 1 {
+		middle = middle - 1
+	}
+
+	for i := 0; i < middle; i += 2 {
+		r[i], r[ns-i-1-1] = r[ns-i-1-1], r[i]
+		r[i+1], r[ns-i-1] = r[ns-i-1], r[i+1]
+	}
+
+	return string(r)
 }
 
 func NewRandomHash() Hash {
