@@ -7,6 +7,8 @@ import (
 	"math"
 	"math/rand"
 	"time"
+
+	"golang.org/x/crypto/ripemd160"
 )
 
 const HashSize = 32
@@ -17,6 +19,8 @@ var (
 )
 
 type Hash [HashSize]byte
+type H256 [256]byte
+type H160 [160]byte
 
 func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
@@ -111,7 +115,7 @@ func (h Hash) Hex() string {
 }
 
 func (h Hash) String() string {
-	return h.Hex()
+	return h.Reverse().Hex()
 }
 
 func (h Hash) Reverse() Hash {
@@ -125,11 +129,23 @@ func (h Hash) RString() string {
 	return h.Reverse().Hex()
 }
 
+func Hash160(data []byte) []byte {
+	hash := sha256.New()
+	hash.Write(data)
+	data = hash.Sum(nil)
+	hash = ripemd160.New()
+	hash.Write(data)
+	data = hash.Sum(nil)
+
+	return data
+}
+
 func Hash256(data []byte) Hash {
-	h := sha256.New()
-	h.Write(data)
-	hash := h.Sum(nil)
-	return NewHash(hash)
+	hash := sha256.New()
+	hash.Write(data)
+	data = hash.Sum(nil)
+
+	return NewHash(data)
 }
 
 func DHash256(data []byte) Hash {

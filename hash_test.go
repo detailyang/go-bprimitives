@@ -6,8 +6,8 @@ import (
 
 func TestDHash256(t *testing.T) {
 	hash := DHash256([]byte(string("hello")))
-	if hash.String() != "9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50" {
-		t.Fatalf("expect :%s", "9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50")
+	if hash.String() != "503d8319a48348cdc610a582f7bf754b5833df65038606eb48510790dfc99595" {
+		t.Fatalf("expect :%s", "503d8319a48348cdc610a582f7bf754b5833df65038606eb48510790dfc99595")
 	}
 
 }
