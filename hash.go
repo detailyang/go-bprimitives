@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"math"
+	"math/big"
 	"math/rand"
 	"time"
 
@@ -90,6 +91,14 @@ func (h *Hash) SetBytes(b []byte) {
 
 func (h Hash) TakeBytes(b, e int) []byte {
 	return h[b:e]
+}
+
+func (h Hash) Cmp(target Hash) int {
+	var a, b big.Int
+	a.SetBytes(h[:])
+	b.SetBytes(target[:])
+
+	return a.Cmp(&b)
 }
 
 func (h Hash) Equal(target Hash) bool {
