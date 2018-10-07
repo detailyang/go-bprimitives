@@ -138,6 +138,12 @@ func (h Hash) RString() string {
 	return h.Reverse().Hex()
 }
 
+type ByHash []Hash
+
+func (a ByHash) Len() int           { return len(a) }
+func (a ByHash) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByHash) Less(i, j int) bool { return a[i].Cmp(a[j]) < 0 }
+
 func Hash160(data []byte) []byte {
 	hash := sha256.New()
 	hash.Write(data)
